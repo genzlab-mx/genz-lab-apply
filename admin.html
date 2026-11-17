@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>지원서 관리 · Gen Z Lab.</title>
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="bg" aria-hidden="true"></div>
+
+<!-- 비밀번호 입력 -->
+<main class="admin-login" id="login">
+  <form class="glass" id="login-form">
+    <img class="mascot" src="assets/glimming.png" alt="">
+    <img class="logo" src="assets/logo-navy.png" alt="Gen Z Lab.">
+    <div>
+      <h1>지원서 관리</h1>
+      <p style="margin-top:6px">질문을 고치고 응답을 보려면 비밀번호를 입력해 주세요.</p>
+    </div>
+    <div>
+      <label for="pw">관리자 비밀번호</label>
+      <input class="field" id="pw" type="password" placeholder="비밀번호" autocomplete="current-password" required>
+    </div>
+    <div class="err" id="login-err" role="alert" hidden></div>
+    <button type="submit" class="btn-coral" id="login-btn" style="height:56px">들어가기</button>
+    <div class="note" id="login-note">비밀번호는 이 기기에 저장되지 않아요.</div>
+  </form>
+</main>
+
+<!-- 관리 화면 -->
+<main class="admin" id="panel" hidden>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <img src="assets/logo-navy.png" alt="Gen Z Lab.">
+        <span class="bar"></span>
+        <h1>지원서 관리</h1>
+      </div>
+      <div class="pills">
+        <span class="pill" id="demo-pill" hidden>미리보기 모드</span>
+        <span class="pill"><span class="dot" id="dot"></span><span id="status-text">모집 중</span></span>
+        <a class="pill" id="link-apply" href="./" target="_blank" rel="noopener">지원서 화면 열기</a>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="관리 메뉴">
+      <button type="button" class="tab" data-tab="questions" aria-pressed="true">질문 관리</button>
+      <button type="button" class="tab" data-tab="responses" aria-pressed="false">응답 현황 <span id="tab-count"></span></button>
+    </nav>
+
+    <!-- ───────── 질문 관리 ───────── -->
+    <div class="tabpane" id="tab-questions">
+      <div class="cols">
+        <div class="left" style="flex:1 1 360px">
+          <section class="glass">
+            <div class="between" style="flex-wrap:nowrap">
+              <div>
+                <div class="h">모집 받기</div>
+                <div class="sub" id="open-hint" style="margin-top:4px"></div>
+              </div>
+              <button type="button" class="switch" id="open-toggle" aria-label="모집 받기 켜기/끄기" aria-pressed="true"><span></span></button>
+            </div>
+          </section>
+
+          <section class="glass">
+            <h2>지원서 정보</h2>
+            <div>
+              <label class="lbl" for="f-title">제목</label>
+              <input class="inp" id="f-title" maxlength="60" placeholder="예: Gen Z Lab. 5기 지원서">
+            </div>
+            <div>
+              <label class="lbl" for="f-intro">안내 문구</label>
+              <textarea id="f-intro" rows="4" maxlength="1000" placeholder="지원서 맨 위에 보여 줄 안내 (모집 일정, 문의처 등)"></textarea>
+            </div>
+            <div class="between">
+              <span class="sub">안내 문구는 1000자까지</span>
+              <button type="button" class="btn" id="f-save">저장</button>
+            </div>
+          </section>
+        </div>
+
+        <section class="glass right">
+          <div class="between">
+            <div>
+              <h2>질문 <span class="sub" id="q-count"></span></h2>
+              <div class="sub" style="margin-top:4px">지원자 화면에 이 순서대로 보여요. 바꾼 내용은 지원자가 새로 들어올 때 반영돼요.</div>
+            </div>
+            <button type="button" class="btn coral" id="q-add">+ 질문 추가</button>
+          </div>
+
+          <!-- 질문 추가·수정 -->
+          <form class="editor" id="editor" hidden novalidate>
+            <div class="h" id="ed-heading">새 질문</div>
+            <div>
+              <div class="lbl">유형</div>
+              <div class="seg" id="ed-type" role="group" aria-label="질문 유형">
+                <button type="button" data-type="short" aria-pressed="true">단답형</button>
+                <button type="button" data-type="long" aria-pressed="false">장문형</button>
+                <button type="button" data-type="single" aria-pressed="false">객관식 · 하나</button>
+                <button type="button" data-type="multi" aria-pressed="false">객관식 · 여러 개</button>
+              </div>
+            </div>
+            <div>
+              <label class="lbl" for="ed-title">질문</label>
+              <input class="inp" id="ed-title" maxlength="200" placeholder="예: 지원 동기를 적어 주세요">
+            </div>
+            <div>
+              <label class="lbl" for="ed-desc">설명 <span class="sub">(선택)</span></label>
+              <input class="inp" id="ed-desc" maxlength="500" placeholder="질문 아래에 작게 보여 줄 설명">
+            </div>
+            <div id="ed-options-row">
+              <label class="lbl" for="ed-options">보기 <span class="sub">(한 줄에 하나씩, 2개 이상)</span></label>
+              <textarea id="ed-options" rows="5" placeholder="프로그램 기획&#10;콘텐츠 제작&#10;운영·진행"></textarea>
+            </div>
+            <div id="ed-max-row">
+              <label class="lbl" for="ed-max">글자 수 제한 <span class="sub">(선택)</span></label>
+              <input class="inp" id="ed-max" type="number" min="1" max="5000" inputmode="numeric" style="max-width:200px">
+            </div>
+            <label class="check"><input type="checkbox" id="ed-required" checked> 꼭 답해야 하는 질문 (필수)</label>
+            <div class="err" id="ed-err" role="alert" hidden></div>
+            <div class="between">
+              <button type="button" class="btn ghost" id="ed-cancel">취소</button>
+              <button type="submit" class="btn" id="ed-save">질문 저장</button>
+            </div>
+          </form>
+
+          <div id="q-list" class="qlist"></div>
+        </section>
+      </div>
+    </div>
+
+    <!-- ───────── 응답 현황 ───────── -->
+    <div class="tabpane" id="tab-responses" hidden>
+      <div class="cols">
+        <div class="left" style="flex:1 1 320px">
+          <section class="glass">
+            <h2>응답 현황</h2>
+            <div class="stats">
+              <div>제출 완료<b id="r-done">0명</b></div>
+              <div>작성 중<b id="r-draft">0명</b></div>
+            </div>
+            <div class="sub" id="r-note"></div>
+            <div class="between">
+              <button type="button" class="btn ghost" id="r-refresh">새로고침</button>
+              <button type="button" class="btn coral" id="r-excel">엑셀 다운로드</button>
+            </div>
+            <label class="check"><input type="checkbox" id="r-include-draft"> 작성 중(미제출) 지원서도 엑셀에 넣기</label>
+          </section>
+        </div>
+
+        <section class="glass right">
+          <div class="between">
+            <h2>지원자</h2>
+            <input class="inp" id="r-search" type="search" placeholder="이름 · Knox ID 검색" style="max-width:240px">
+          </div>
+          <div class="seg small" id="r-filter" role="group" aria-label="상태로 거르기">
+            <button type="button" data-filter="all" aria-pressed="true">전체</button>
+            <button type="button" data-filter="submitted" aria-pressed="false">제출 완료</button>
+            <button type="button" data-filter="draft" aria-pressed="false">작성 중</button>
+          </div>
+          <div class="table-scroll">
+            <div class="table" style="min-width:560px">
+              <div class="tr th resp"><span>이름</span><span>Knox ID</span><span>상태</span><span>시각</span><span></span></div>
+              <div id="r-list"></div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+
+  <!-- 지원서 보기 -->
+  <dialog class="sheet" id="sheet" aria-labelledby="sheet-name">
+    <div class="sheet-body">
+      <div class="between" style="flex-wrap:nowrap;align-items:flex-start">
+        <div>
+          <h2 id="sheet-name"></h2>
+          <div class="sub" id="sheet-meta" style="margin-top:4px"></div>
+        </div>
+        <button type="button" class="btn ghost" id="sheet-close">닫기</button>
+      </div>
+      <div id="sheet-answers" class="answers"></div>
+      <div class="sheet-actions">
+        <div class="sub">지원자 관리</div>
+        <div class="row">
+          <button type="button" class="btn ghost" id="sheet-pin">PIN 초기화</button>
+          <button type="button" class="btn ghost" id="sheet-reopen">제출 취소 (다시 고칠 수 있게)</button>
+          <button type="button" class="btn danger" id="sheet-delete">지원서 삭제</button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script src="config.js"></script>
+<script src="js/common.js"></script>
+<script src="js/demo.js"></script>
+<script src="js/admin.js"></script>
+</body>
+</html>
